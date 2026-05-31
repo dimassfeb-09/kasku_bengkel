@@ -24,7 +24,6 @@ class ServiceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Manajemen Servis')),
       body: BlocBuilder<ServiceBloc, ServiceState>(
         builder: (context, state) {
           if (state is ServiceLoading) {

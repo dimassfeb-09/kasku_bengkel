@@ -40,14 +40,15 @@ class CashierView extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Kasir / Transaksi')),
         body: BlocBuilder<CashierBloc, CashierState>(
           builder: (context, state) {
             if (state is CashierLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is PendingPaymentsLoaded) {
               if (state.orders.isEmpty) {
-                return const Center(child: Text('Tidak ada order yang siap dibayar.'));
+                return const Center(
+                  child: Text('Tidak ada order yang siap dibayar.'),
+                );
               }
               return ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -56,15 +57,31 @@ class CashierView extends StatelessWidget {
                   final order = state.orders[index];
                   return Card(
                     child: ListTile(
-                      title: Text(order.vehicleInfo.plateNumber, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('${order.vehicleInfo.ownerName} - ${order.vehicleInfo.vehicleType}'),
+                      title: Text(
+                        order.vehicleInfo.plateNumber,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${order.vehicleInfo.ownerName} - ${order.vehicleInfo.vehicleType}',
+                      ),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text('Rp ${order.totalEstimation.toStringAsFixed(0)}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
-                          Text(order.status.name, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                          Text(
+                            'Rp ${order.totalEstimation.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          Text(
+                            order.status.name,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ],
                       ),
                       onTap: () {
