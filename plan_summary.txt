@@ -1,0 +1,20 @@
+# Kasirku Bengkel Implementation Plan
+
+## Phase 1: Setup & Scaffolding
+1. **Dependencies:** Add reezed_annotation, json_annotation to dependencies. Add uild_runner, reezed, json_serializable to dev_dependencies.
+2. **Code Gen:** Setup uild.yaml if necessary, though default is usually fine.
+3. **Theme Setup:** Create lib/core/theme/app_theme.dart with Deep Blue (#1E3A8A) primary and Orange (#F97316) accent. Define the 8px spacing grid and typography.
+4. **Router Shell:** Update lib/core/router/app_router.dart to use ShellRoute with a BottomNavigationBar (Dashboard, Kasir, Servis, Laporan).
+
+## Phase 2: Core Infrastructure (Mocked)
+1. **Domain Interfaces:** Define generic repository structures in lib/core that return Either<Failure, T>.
+2. **Mocked DB:** Create an in-memory singleton class MockDatabase to hold states for Services and Transactions. This allows easy swapping later.
+
+## Phase 3: Feature Implementation (Iterative)
+Each feature will follow the Clean Architecture template:
+1. **Dashboard Module:** Use cases to fetch daily summaries. UI for charts and metrics.
+2. **Service Management Module:** Freezed entities for ServiceOrder. Mocked repository implementation. Forms and lists for tracking repair status.
+3. **Cashier Module:** Fetch pending ServiceOrders. UI for calculating change and marking as paid.
+4. **Reports Module:** Fetch historical data, filter logic, and UI tables.
+
+Does this high-level plan look good? If so, I will prepare the detailed bite-sized plan using the \writing-plans\ skill.
