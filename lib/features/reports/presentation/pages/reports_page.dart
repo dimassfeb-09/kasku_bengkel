@@ -10,10 +10,14 @@ class ReportsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<ReportsBloc>()
-        ..add(LoadReports(DateTimeRange(
-          start: DateTime.now().subtract(const Duration(days: 7)),
-          end: DateTime.now(),
-        ))),
+        ..add(
+          LoadReports(
+            DateTimeRange(
+              start: DateTime.now().subtract(const Duration(days: 7)),
+              end: DateTime.now(),
+            ),
+          ),
+        ),
       child: const ReportsView(),
     );
   }
@@ -25,7 +29,6 @@ class ReportsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Laporan & Riwayat')),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
           if (state is ReportsLoading) {
@@ -41,11 +44,17 @@ class ReportsView extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildSummaryGrid(m),
                   const SizedBox(height: 24),
-                  const Text('Top Jasa Servis', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Top Jasa Servis',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
                   _buildTopServices(m.topServices),
                   const SizedBox(height: 24),
-                  const Text('Riwayat Order', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Riwayat Order',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
                   _buildOrderHistory(m.filteredOrders),
                 ],
@@ -92,9 +101,17 @@ class ReportsView extends StatelessWidget {
       crossAxisSpacing: 8,
       childAspectRatio: 1.2,
       children: [
-        _MetricCard('Pendapatan', 'Rp ${m.revenue.toStringAsFixed(0)}', Colors.blue),
+        _MetricCard(
+          'Pendapatan',
+          'Rp ${m.revenue.toStringAsFixed(0)}',
+          Colors.blue,
+        ),
         _MetricCard('Transaksi', '${m.transactionCount}', Colors.teal),
-        _MetricCard('Rata-rata', 'Rp ${m.averageValue.toStringAsFixed(0)}', Colors.orange),
+        _MetricCard(
+          'Rata-rata',
+          'Rp ${m.averageValue.toStringAsFixed(0)}',
+          Colors.orange,
+        ),
       ],
     );
   }
@@ -110,7 +127,14 @@ class ReportsView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
         ],
@@ -122,20 +146,37 @@ class ReportsView extends StatelessWidget {
     if (services.isEmpty) return const Text('Belum ada data jasa terlaris.');
     return Card(
       child: Column(
-        children: services.entries.map((e) => ListTile(
-          title: Text(e.key),
-          trailing: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(20)),
-            child: Text('${e.value}x', style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-          ),
-        )).toList(),
+        children: services.entries
+            .map(
+              (e) => ListTile(
+                title: Text(e.key),
+                trailing: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${e.value}x',
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
       ),
     );
   }
 
   Widget _buildOrderHistory(List<dynamic> orders) {
-    if (orders.isEmpty) return const Text('Tidak ada riwayat order di periode ini.');
+    if (orders.isEmpty)
+      return const Text('Tidak ada riwayat order di periode ini.');
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -145,8 +186,13 @@ class ReportsView extends StatelessWidget {
         return Card(
           margin: const EdgeInsets.only(bottom: 8),
           child: ListTile(
-            title: Text(o.vehicleInfo.plateNumber, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('${o.vehicleInfo.ownerName} - ${o.createdAt.toString().split(' ')[0]}'),
+            title: Text(
+              o.vehicleInfo.plateNumber,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              '${o.vehicleInfo.ownerName} - ${o.createdAt.toString().split(' ')[0]}',
+            ),
             trailing: _StatusBadge(o.status.name),
           ),
         );
@@ -161,7 +207,10 @@ class ReportsView extends StatelessWidget {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(status.toUpperCase(), style: const TextStyle(fontSize: 10, color: Colors.black54)),
+      child: Text(
+        status.toUpperCase(),
+        style: const TextStyle(fontSize: 10, color: Colors.black54),
+      ),
     );
   }
 }

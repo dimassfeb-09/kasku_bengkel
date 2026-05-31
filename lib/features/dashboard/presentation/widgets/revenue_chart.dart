@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RevenueChart extends StatelessWidget {
   final List<double> weeklyRevenue;
@@ -8,37 +9,59 @@ class RevenueChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.7,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: _getMaxY(),
-          barTouchData: BarTouchData(enabled: true),
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: _getBottomTitles,
-                reservedSize: 38,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AspectRatio(
+          aspectRatio: 1.8,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: _getMaxY(),
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipColor: (_) => const Color(0xFF1E293B),
+                  tooltipRoundedRadius: 8,
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    return BarTooltipItem(
+                      'Rp ${rod.toY.toStringAsFixed(0)}',
+                      GoogleFonts.firaSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    );
+                  },
+                ),
               ),
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: _getBottomTitles,
+                    reservedSize: 30,
+                  ),
+                ),
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              gridData: const FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              barGroups: _getBarGroups(),
             ),
-            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
           ),
-          gridData: const FlGridData(show: false),
-          borderData: FlBorderData(show: false),
-          barGroups: _getBarGroups(),
         ),
-      ),
+      ],
     );
   }
 
   double _getMaxY() {
     double max = weeklyRevenue.fold(0, (prev, element) => element > prev ? element : prev);
-    return max == 0 ? 100000 : max * 1.2;
+    return max == 0 ? 100000 : max * 1.3;
   }
 
   Widget _getBottomTitles(double value, TitleMeta meta) {
@@ -48,8 +71,15 @@ class RevenueChart extends StatelessWidget {
     
     return SideTitleWidget(
       meta: meta,
-      space: 4,
-      child: Text(days[index], style: const TextStyle(fontSize: 10, color: Colors.grey)),
+      space: 8,
+      child: Text(
+        days[index],
+        style: GoogleFonts.firaSans(
+          fontSize: 11,
+          color: const Color(0xFF94A3B8),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 
@@ -60,9 +90,14 @@ class RevenueChart extends StatelessWidget {
         barRods: [
           BarChartRodData(
             toY: weeklyRevenue[i],
-            color: const Color(0xFF1E3A8A),
-            width: 16,
-            borderRadius: BorderRadius.circular(4),
+            color: const Color(0xFF64748B),
+            width: 14,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+            backDrawRodData: BackgroundBarChartRodData(
+              show: true,
+              toY: _getMaxY(),
+              color: const Color(0xFFF1F5F9),
+            ),
           ),
         ],
       );
