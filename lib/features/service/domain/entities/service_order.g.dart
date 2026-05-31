@@ -71,4 +71,5 @@ const _$ServiceStatusEnumMap = {
   ServiceStatus.dikerjakan: 'dikerjakan',
   ServiceStatus.selesai: 'selesai',
   ServiceStatus.siapDiambil: 'siapDiambil',
+  ServiceStatus.lunas: 'lunas',
 };

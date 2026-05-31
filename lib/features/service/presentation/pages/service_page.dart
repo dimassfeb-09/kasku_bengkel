@@ -186,6 +186,10 @@ class _StatusBadge extends StatelessWidget {
         color = Colors.teal;
         label = 'Siap Diambil';
         break;
+      case ServiceStatus.lunas:
+        color = Colors.grey;
+        label = 'Lunas';
+        break;
     }
 
     return Container(

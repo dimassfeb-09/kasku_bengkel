@@ -142,7 +142,7 @@ class ServiceDetailPage extends StatelessWidget {
         color = Colors.blue;
         text = 'SELESAI';
         break;
-      case ServiceStatus.siapDiambil:
+      case ServiceStatus.siapDiambil || ServiceStatus.lunas:
         color = Colors.green;
         text = 'SIAP DIAMBIL';
         break;

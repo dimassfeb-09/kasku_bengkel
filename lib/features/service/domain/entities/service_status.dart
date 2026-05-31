@@ -1,1 +1,1 @@
-enum ServiceStatus { antri, dikerjakan, selesai, siapDiambil }
+enum ServiceStatus { antri, dikerjakan, selesai, siapDiambil, lunas }
