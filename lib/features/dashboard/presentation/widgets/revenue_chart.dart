@@ -43,9 +43,15 @@ class RevenueChart extends StatelessWidget {
                     reservedSize: 30,
                   ),
                 ),
-                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
               gridData: const FlGridData(show: false),
               borderData: FlBorderData(show: false),
@@ -60,15 +66,26 @@ class RevenueChart extends StatelessWidget {
   }
 
   double _getMaxY() {
-    double max = weeklyRevenue.fold(0, (prev, element) => element > prev ? element : prev);
+    double max = weeklyRevenue.fold(
+      0,
+      (prev, element) => element > prev ? element : prev,
+    );
     return max == 0 ? 100000 : max * 1.3;
   }
 
   Widget _getBottomTitles(double value, TitleMeta meta) {
-    const days = ['Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb', 'Mg'];
+    const days = [
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu',
+    ];
     final index = value.toInt();
     if (index < 0 || index >= days.length) return const SizedBox.shrink();
-    
+
     return SideTitleWidget(
       meta: meta,
       space: 8,
