@@ -6,6 +6,8 @@ import '../../../../core/di/injection_container.dart';
 import '../../domain/entities/report_metrics.dart';
 import '../../../service/domain/entities/service_status.dart';
 
+import '../../../../core/utils/data_exporter.dart';
+
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
@@ -66,9 +68,24 @@ class ReportsView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _buildSectionHeader('RIWAYAT AKTIVITAS'),
-                      Text(
-                        '${m.filteredOrders.length} Order',
-                        style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.download_rounded, size: 18, color: Color(0xFF1E3A8A)),
+                            onPressed: () async {
+                              final path = await DataExporter.exportToExcel(m.filteredOrders);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Berhasil ekspor ke: $path')),
+                                );
+                              }
+                            },
+                          ),
+                          Text(
+                            '${m.filteredOrders.length} Order',
+                            style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ],
                   ),

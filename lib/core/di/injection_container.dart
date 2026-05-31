@@ -12,10 +12,14 @@ import '../../features/cashier/data/repositories/cashier_repository_impl.dart';
 import '../../features/cashier/presentation/bloc/cashier_bloc.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/reports/presentation/bloc/reports_bloc.dart';
+import '../database/local_database.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // Database
+  sl.registerLazySingleton(() => LocalDatabase());
+
   // Features - Auth
   // Bloc
   sl.registerFactory(() => AuthBloc(loginUseCase: sl()));
@@ -38,7 +42,7 @@ Future<void> init() async {
   sl.registerFactory(() => ServiceBloc(repository: sl()));
   
   // Repository
-  sl.registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl());
+  sl.registerLazySingleton<ServiceRepository>(() => ServiceRepositoryImpl(dbProvider: sl()));
 
   // Features - Cashier
   // Bloc
@@ -50,7 +54,7 @@ Future<void> init() async {
   );
 
   // Repository
-  sl.registerLazySingleton<CashierRepository>(() => CashierRepositoryImpl());
+  sl.registerLazySingleton<CashierRepository>(() => CashierRepositoryImpl(dbProvider: sl()));
 
   // Features - Dashboard
   // Bloc

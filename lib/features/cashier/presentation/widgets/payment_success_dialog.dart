@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../service/domain/entities/service_order.dart';
 import '../../domain/entities/payment_transaction.dart';
 
+import '../../../../core/utils/pdf_generator.dart';
+
 class PaymentSuccessDialog extends StatelessWidget {
   final PaymentTransaction transaction;
   final ServiceOrder order;
@@ -71,7 +73,7 @@ class PaymentSuccessDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {}, // Future: PDF export
+                    onPressed: () => PdfGenerator.generateReceipt(transaction: transaction, order: order),
                     icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
                     label: const Text('STRUK PDF'),
                   ),
