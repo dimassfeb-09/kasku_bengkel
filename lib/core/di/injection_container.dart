@@ -11,6 +11,7 @@ import '../../features/cashier/domain/repositories/cashier_repository.dart';
 import '../../features/cashier/data/repositories/cashier_repository_impl.dart';
 import '../../features/cashier/presentation/bloc/cashier_bloc.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../features/reports/presentation/bloc/reports_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -55,6 +56,15 @@ Future<void> init() async {
   // Bloc
   sl.registerFactory(
     () => DashboardBloc(
+      serviceRepository: sl(),
+      cashierRepository: sl(),
+    ),
+  );
+
+  // Features - Reports
+  // Bloc
+  sl.registerFactory(
+    () => ReportsBloc(
       serviceRepository: sl(),
       cashierRepository: sl(),
     ),
