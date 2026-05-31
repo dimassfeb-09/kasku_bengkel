@@ -13,7 +13,7 @@ class ServicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<ServiceBloc>()..add(FetchServices()),
+      create: (context) => sl<ServiceBloc>()..add(const FetchServices()),
       child: const ServiceView(),
     );
   }
@@ -57,7 +57,7 @@ class ServiceView extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddServiceDialog(context),
+        onPressed: () => context.push('/services/add'),
         label: Text(
           'Servis Baru',
           style: GoogleFonts.firaSans(fontWeight: FontWeight.bold),
@@ -86,129 +86,6 @@ class ServiceView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showAddServiceDialog(BuildContext context) {
-    final plateController = TextEditingController();
-    final ownerController = TextEditingController();
-    final phoneController = TextEditingController();
-    final typeController = TextEditingController();
-    final complaintController = TextEditingController();
-    bool saveToMaster = true;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => BlocProvider.value(
-        value: context.read<ServiceBloc>(),
-        child: StatefulBuilder(
-          builder: (context, setState) => BlocListener<ServiceBloc, ServiceState>(
-            listener: (context, state) {
-              if (state is ServiceLoaded && state.searchedVehicle != null) {
-                plateController.text = state.searchedVehicle!.plateNumber;
-                ownerController.text = state.searchedCustomer?.name ?? '';
-                phoneController.text = state.searchedCustomer?.phone ?? '';
-                typeController.text = state.searchedVehicle!.type;
-              }
-            },
-            child: AlertDialog(
-              title: Text('TAMBAH SERVIS BARU',
-                  style: GoogleFonts.firaSans(
-                      fontWeight: FontWeight.bold, fontSize: 18)),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: TextField(
-                        controller: plateController,
-                        onChanged: (val) => context
-                            .read<ServiceBloc>()
-                            .add(SearchVehicleByPlate(val.toUpperCase())),
-                        decoration: const InputDecoration(
-                          labelText: 'Plat Nomor',
-                          prefixIcon: Icon(Icons.badge_outlined, size: 20),
-                          hintText: 'CONTOH: B 1234 ABC',
-                        ),
-                      ),
-                    ),
-                    _buildTextField(
-                        ownerController, 'Nama Pemilik', Icons.person_outline),
-                    _buildTextField(phoneController, 'No HP',
-                        Icons.phone_android_outlined,
-                        keyboardType: TextInputType.phone),
-                    _buildTextField(
-                        typeController, 'Jenis Kendaraan', Icons.directions_car_outlined),
-                    _buildTextField(
-                        complaintController, 'Keluhan', Icons.report_problem_outlined,
-                        maxLines: 3),
-                    CheckboxListTile(
-                      title: const Text('Simpan/Update ke Database Pelanggan',
-                          style: TextStyle(fontSize: 12)),
-                      value: saveToMaster,
-                      onChanged: (val) =>
-                          setState(() => saveToMaster = val ?? true),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text('BATAL',
-                      style: TextStyle(color: const Color(0xFF64748B))),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (plateController.text.isEmpty) return;
-                    final newOrder = ServiceOrder(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      vehicleInfo: VehicleInfo(
-                        plateNumber: plateController.text.toUpperCase(),
-                        ownerName: ownerController.text,
-                        ownerPhone: phoneController.text,
-                        vehicleType: typeController.text,
-                      ),
-                      complaint: complaintController.text,
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
-                    );
-                    context
-                        .read<ServiceBloc>()
-                        .add(AddServiceOrder(newOrder, saveToMaster: saveToMaster));
-                    Navigator.pop(dialogContext);
-                  },
-                  child: const Text('SIMPAN'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController controller,
-    String label,
-    IconData icon, {
-    TextInputType? keyboardType,
-    int maxLines = 1,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, size: 20),
-        ),
       ),
     );
   }

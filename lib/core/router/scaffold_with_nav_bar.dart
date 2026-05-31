@@ -19,6 +19,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
             label: 'Dashboard',
           ),
           NavigationDestination(
+            icon: Icon(Icons.inventory_2_outlined),
+            label: 'Stok',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.point_of_sale),
             label: 'Kasir',
           ),

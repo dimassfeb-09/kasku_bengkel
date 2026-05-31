@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/cashier_bloc.dart';
-import '../widgets/checkout_dialog.dart';
-import '../widgets/payment_success_dialog.dart';
 import '../../../../core/di/injection_container.dart';
 
 class CashierPage extends StatelessWidget {
@@ -26,14 +25,7 @@ class CashierView extends StatelessWidget {
     return BlocListener<CashierBloc, CashierState>(
       listener: (context, state) {
         if (state is PaymentSuccess) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => PaymentSuccessDialog(
-              transaction: state.transaction,
-              order: state.order,
-            ),
-          );
+          context.read<CashierBloc>().add(const LoadPendingPayments());
         } else if (state is PaymentError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -164,15 +156,7 @@ class _PendingOrderCard extends StatelessWidget {
             const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8)),
           ],
         ),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: context.read<CashierBloc>(),
-              child: CheckoutDialog(order: order),
-            ),
-          );
-        },
+        onTap: () => context.push('/cashier/checkout/${order.id}'),
       ),
     );
   }

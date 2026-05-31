@@ -22,6 +22,21 @@ class LocalDatabase {
   }
 
   Future _createDB(Database db, int version) async {
+    // Inventory Table
+    await db.execute('''
+      CREATE TABLE inventory (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL, -- part, labor
+        sku TEXT,
+        purchasePrice REAL NOT NULL,
+        sellingPrice REAL NOT NULL,
+        stock INTEGER NOT NULL,
+        minStockLevel INTEGER NOT NULL,
+        createdAt TEXT NOT NULL
+      )
+    ''');
+
     // Customer Table
     await db.execute('''
       CREATE TABLE customers (

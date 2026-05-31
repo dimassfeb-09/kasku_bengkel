@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/dashboard_metrics.dart';
 import '../../../service/domain/repositories/service_repository.dart';
 import '../../../cashier/domain/repositories/cashier_repository.dart';
-import '../../../service/domain/entities/service_status.dart';
 
 // Events
 abstract class DashboardEvent extends Equatable {
@@ -24,13 +23,16 @@ abstract class DashboardState extends Equatable {
 }
 
 class DashboardInitial extends DashboardState {}
+
 class DashboardLoading extends DashboardState {}
+
 class DashboardLoaded extends DashboardState {
   final DashboardMetrics metrics;
   const DashboardLoaded(this.metrics);
   @override
   List<Object?> get props => [metrics];
 }
+
 class DashboardError extends DashboardState {
   final String message;
   const DashboardError(this.message);
@@ -55,7 +57,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     emit(DashboardLoading());
-    
+
     final servicesResult = await serviceRepository.getActiveServices();
     final transactionsResult = await cashierRepository.getTransactionHistory();
 
@@ -73,7 +75,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     double todayRevenue = 0;
     int todayCount = 0;
     for (final tx in transactions) {
-      final txDate = DateTime(tx.transactionDate.year, tx.transactionDate.month, tx.transactionDate.day);
+      final txDate = DateTime(
+        tx.transactionDate.year,
+        tx.transactionDate.month,
+        tx.transactionDate.day,
+      );
       if (txDate.isAtSameMomentAs(today)) {
         todayRevenue += tx.totalAmount;
         todayCount++;
@@ -81,19 +87,28 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }
 
     // 2. Active Queues & Completed Vehicles
-    int activeQueues = services.where((s) => 
-      s.status.toString().split('.').last == 'antri' || s.status.toString().split('.').last == 'dikerjakan'
-    ).length;
+    int activeQueues = services
+        .where(
+          (s) =>
+              s.status.toString().split('.').last == 'antri' ||
+              s.status.toString().split('.').last == 'dikerjakan',
+        )
+        .length;
 
-    int completedVehicles = services.where((s) => 
-      s.status.toString().split('.').last == 'selesai' || s.status.toString().split('.').last == 'siapDiambil'
-    ).length;
+    int completedVehicles = services
+        .where(
+          (s) =>
+              s.status.toString().split('.').last == 'selesai' ||
+              s.status.toString().split('.').last == 'siapDiambil',
+        )
+        .length;
 
     // 3. Recent Active Services (Top 5)
-    final recentServices = services
-        .where((s) => s.status.toString().split('.').last != 'lunas')
-        .toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final recentServices =
+        services
+            .where((s) => s.status.toString().split('.').last != 'lunas')
+            .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final topRecent = recentServices.take(5).toList();
 
     // 4. Weekly Revenue (Last 7 Days)
@@ -101,20 +116,28 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     for (int i = 0; i < 7; i++) {
       final day = today.subtract(Duration(days: 6 - i));
       for (final tx in transactions) {
-        final txDate = DateTime(tx.transactionDate.year, tx.transactionDate.month, tx.transactionDate.day);
+        final txDate = DateTime(
+          tx.transactionDate.year,
+          tx.transactionDate.month,
+          tx.transactionDate.day,
+        );
         if (txDate.isAtSameMomentAs(day)) {
           weeklyRevenue[i] += tx.totalAmount;
         }
       }
     }
 
-    emit(DashboardLoaded(DashboardMetrics(
-      todayRevenue: todayRevenue,
-      todayTransactionCount: todayCount,
-      activeQueues: activeQueues,
-      completedVehicles: completedVehicles,
-      recentServices: topRecent,
-      weeklyRevenue: weeklyRevenue,
-    )));
+    emit(
+      DashboardLoaded(
+        DashboardMetrics(
+          todayRevenue: todayRevenue,
+          todayTransactionCount: todayCount,
+          activeQueues: activeQueues,
+          completedVehicles: completedVehicles,
+          recentServices: topRecent,
+          weeklyRevenue: weeklyRevenue,
+        ),
+      ),
+    );
   }
 }

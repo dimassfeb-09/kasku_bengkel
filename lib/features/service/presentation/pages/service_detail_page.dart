@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/service_order.dart';
 import '../../domain/entities/service_status.dart';
 import '../../domain/entities/service_item.dart';
@@ -62,7 +63,7 @@ class ServiceDetailPage extends StatelessWidget {
                     children: [
                       _buildSectionHeader('DAFTAR PEKERJAAN & PART'),
                       TextButton.icon(
-                        onPressed: () => _showAddItemDialog(context, serviceId),
+                        onPressed: () => context.push('/services/$serviceId/add_item'),
                         icon: const Icon(Icons.add, size: 18),
                         label: const Text('TAMBAH'),
                       ),
@@ -365,123 +366,6 @@ class ServiceDetailPage extends StatelessWidget {
           style: GoogleFonts.firaSans(
             fontWeight: FontWeight.w900,
             letterSpacing: 1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showAddItemDialog(BuildContext context, String id) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        String name = '';
-        double price = 0;
-        int qty = 1;
-        bool isLabor = true;
-
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(
-                'TAMBAH ITEM',
-                style: GoogleFonts.firaSans(fontWeight: FontWeight.bold),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      _buildChip(
-                        'JASA',
-                        isLabor,
-                        () => setState(() => isLabor = true),
-                      ),
-                      const SizedBox(width: 8),
-                      _buildChip(
-                        'PART',
-                        !isLabor,
-                        () => setState(() => isLabor = false),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Nama Item / Jasa',
-                    ),
-                    onChanged: (val) => name = val,
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Harga Unit',
-                      prefixText: 'Rp ',
-                    ),
-                    keyboardType: TextInputType.number,
-                    onChanged: (val) => price = double.tryParse(val) ?? 0,
-                  ),
-                  if (!isLabor) ...[
-                    const SizedBox(height: 12),
-                    TextField(
-                      decoration: const InputDecoration(labelText: 'Kuantitas'),
-                      keyboardType: TextInputType.number,
-                      onChanged: (val) => qty = int.tryParse(val) ?? 1,
-                    ),
-                  ],
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('BATAL'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (name.isEmpty || price <= 0) return;
-                    final item = isLabor
-                        ? ServiceItem.labor(name: name, price: price)
-                        : ServiceItem.part(
-                            name: name,
-                            quantity: qty,
-                            unitPrice: price,
-                          );
-                    context.read<ServiceBloc>().add(AddServiceItem(id, item));
-                    Navigator.pop(dialogContext);
-                  },
-                  child: const Text('TAMBAH'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildChip(String label, bool selected, VoidCallback onTap) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? const Color(0xFF1E3A8A) : Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: selected
-                  ? const Color(0xFF1E3A8A)
-                  : const Color(0xFFE2E8F0),
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? Colors.white : const Color(0xFF64748B),
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
           ),
         ),
       ),

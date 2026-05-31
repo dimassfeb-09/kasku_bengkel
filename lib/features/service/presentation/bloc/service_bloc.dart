@@ -7,6 +7,7 @@ import '../../domain/repositories/service_repository.dart';
 
 import '../../domain/entities/customer.dart';
 import '../../domain/entities/vehicle.dart';
+import '../../../inventory/domain/repositories/inventory_repository.dart';
 
 // Events
 abstract class ServiceEvent extends Equatable {
@@ -96,8 +97,12 @@ class ServiceError extends ServiceState {
 // Bloc
 class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   final ServiceRepository repository;
+  final InventoryRepository inventoryRepository;
 
-  ServiceBloc({required this.repository}) : super(ServiceInitial()) {
+  ServiceBloc({
+    required this.repository,
+    required this.inventoryRepository,
+  }) : super(ServiceInitial()) {
     on<FetchServices>(_onFetchServices);
     on<AddServiceOrder>(_onAddServiceOrder);
     on<UpdateServiceStatus>(_onUpdateServiceStatus);
@@ -182,14 +187,51 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   }
 
   Future<void> _onAddServiceItem(AddServiceItem event, Emitter<ServiceState> emit) async {
+    // 1. If it's a part, decrease stock immediately (Option 2 choice)
+    await event.item.maybeMap(
+      part: (part) async {
+        final catalog = await inventoryRepository.getAllItems();
+        catalog.fold((_) {}, (items) async {
+          final matched = items.where((i) => i.name == part.name).firstOrNull;
+          if (matched != null) {
+            await inventoryRepository.adjustStock(matched.id, -part.quantity);
+          }
+        });
+      },
+      orElse: () async {},
+    );
+
     final result = await repository.addServiceItem(event.id, event.item);
     result.fold(
       (failure) => emit(const ServiceError('Failed to add item')),
-      (_) => add(const FetchServices()),
+      (_) {
+        emit(const ServiceOperationSuccess('Berhasil menambah item'));
+        add(const FetchServices());
+      },
     );
   }
 
   Future<void> _onRemoveServiceItem(RemoveServiceItem event, Emitter<ServiceState> emit) async {
+    final services = await repository.getActiveServices();
+    await services.fold((_) async {}, (list) async {
+      final order = list.where((o) => o.id == event.id).firstOrNull;
+      if (order != null && event.index < order.items.length) {
+        final item = order.items[event.index];
+        await item.maybeMap(
+          part: (part) async {
+            final catalog = await inventoryRepository.getAllItems();
+            catalog.fold((_) {}, (items) async {
+              final matched = items.where((i) => i.name == part.name).firstOrNull;
+              if (matched != null) {
+                await inventoryRepository.adjustStock(matched.id, part.quantity);
+              }
+            });
+          },
+          orElse: () async {},
+        );
+      }
+    });
+
     final result = await repository.removeServiceItem(event.id, event.index);
     result.fold(
       (failure) => emit(const ServiceError('Failed to remove item')),
