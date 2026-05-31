@@ -96,80 +96,80 @@ class ServiceView extends StatelessWidget {
     final phoneController = TextEditingController();
     final typeController = TextEditingController();
     final complaintController = TextEditingController();
+    bool saveToMaster = true;
 
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'TAMBAH SERVIS BARU',
-          style: GoogleFonts.firaSans(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField(
-                plateController,
-                'Plat Nomor',
-                Icons.badge_outlined,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setState) => BlocListener<ServiceBloc, ServiceState>(
+          listener: (context, state) {
+            if (state is ServiceLoaded && state.searchedVehicle != null) {
+              plateController.text = state.searchedVehicle!.plateNumber;
+              ownerController.text = state.searchedCustomer?.name ?? '';
+              phoneController.text = state.searchedCustomer?.phone ?? '';
+              typeController.text = state.searchedVehicle!.type;
+            }
+          },
+          child: AlertDialog(
+            title: Text('TAMBAH SERVIS BARU', style: GoogleFonts.firaSans(fontWeight: FontWeight.bold, fontSize: 18)),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: TextField(
+                      controller: plateController,
+                      onChanged: (val) => context.read<ServiceBloc>().add(SearchVehicleByPlate(val.toUpperCase())),
+                      decoration: const InputDecoration(
+                        labelText: 'Plat Nomor',
+                        prefixIcon: Icon(Icons.badge_outlined, size: 20),
+                        hintText: 'CONTOH: B 1234 ABC',
+                      ),
+                    ),
+                  ),
+                  _buildTextField(ownerController, 'Nama Pemilik', Icons.person_outline),
+                  _buildTextField(phoneController, 'No HP', Icons.phone_android_outlined, keyboardType: TextInputType.phone),
+                  _buildTextField(typeController, 'Jenis Kendaraan', Icons.directions_car_outlined),
+                  _buildTextField(complaintController, 'Keluhan', Icons.report_problem_outlined, maxLines: 3),
+                  CheckboxListTile(
+                    title: const Text('Simpan/Update ke Database Pelanggan', style: TextStyle(fontSize: 12)),
+                    value: saveToMaster,
+                    onChanged: (val) => setState(() => saveToMaster = val ?? true),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ],
               ),
-              _buildTextField(
-                ownerController,
-                'Nama Pemilik',
-                Icons.person_outline,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text('BATAL', style: TextStyle(color: const Color(0xFF64748B))),
               ),
-              _buildTextField(
-                phoneController,
-                'No HP',
-                Icons.phone_android_outlined,
-                keyboardType: TextInputType.phone,
-              ),
-              _buildTextField(
-                typeController,
-                'Jenis Kendaraan',
-                Icons.directions_car_outlined,
-              ),
-              _buildTextField(
-                complaintController,
-                'Keluhan',
-                Icons.report_problem_outlined,
-                maxLines: 3,
+              ElevatedButton(
+                onPressed: () {
+                  if (plateController.text.isEmpty) return;
+                  final newOrder = ServiceOrder(
+                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    vehicleInfo: VehicleInfo(
+                      plateNumber: plateController.text.toUpperCase(),
+                      ownerName: ownerController.text,
+                      ownerPhone: phoneController.text,
+                      vehicleType: typeController.text,
+                    ),
+                    complaint: complaintController.text,
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now(),
+                  );
+                  context.read<ServiceBloc>().add(AddServiceOrder(newOrder, saveToMaster: saveToMaster));
+                  Navigator.pop(dialogContext);
+                },
+                child: const Text('SIMPAN'),
               ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              'BATAL',
-              style: TextStyle(color: const Color(0xFF64748B)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (plateController.text.isEmpty) return;
-              final newOrder = ServiceOrder(
-                id: DateTime.now().millisecondsSinceEpoch.toString(),
-                vehicleInfo: VehicleInfo(
-                  plateNumber: plateController.text.toUpperCase(),
-                  ownerName: ownerController.text,
-                  ownerPhone: phoneController.text,
-                  vehicleType: typeController.text,
-                ),
-                complaint: complaintController.text,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now(),
-              );
-              context.read<ServiceBloc>().add(AddServiceOrder(newOrder));
-              Navigator.pop(dialogContext);
-            },
-            child: const Text('SIMPAN'),
-          ),
-        ],
       ),
     );
   }
@@ -304,27 +304,32 @@ class _StatusBadge extends StatelessWidget {
     Color color;
     String label;
 
-    switch (status) {
-      case ServiceStatus.antri:
+    final currentStatus = status.toString().split('.').last;
+
+    switch (currentStatus) {
+      case 'antri':
         color = Colors.orange;
         label = 'ANTRI';
         break;
-      case ServiceStatus.dikerjakan:
+      case 'dikerjakan':
         color = Colors.blue;
         label = 'PROSES';
         break;
-      case ServiceStatus.selesai:
+      case 'selesai':
         color = Colors.green;
         label = 'SELESAI';
         break;
-      case ServiceStatus.siapDiambil:
+      case 'siapDiambil':
         color = Colors.teal;
         label = 'SIAP';
         break;
-      case ServiceStatus.lunas:
+      case 'lunas':
         color = const Color(0xFF64748B);
         label = 'LUNAS';
         break;
+      default:
+        color = Colors.grey;
+        label = 'UNKNOWN';
     }
 
     return Container(

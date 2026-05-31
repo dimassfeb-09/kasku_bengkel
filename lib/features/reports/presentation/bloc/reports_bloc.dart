@@ -86,7 +86,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     // Top Services Ranking
     final serviceCounts = <String, int>{};
     for (final order in filteredOrders) {
-      if (order.status == ServiceStatus.lunas) {
+      if (order.status.toString().split('.').last == 'lunas') {
         for (final item in order.items) {
           item.maybeWhen(
             labor: (name, _) {

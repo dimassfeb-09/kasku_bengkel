@@ -253,7 +253,7 @@ class DashboardView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            s.status.name.toUpperCase(),
+            s.status.toString().split('.').last.toUpperCase(),
             style: GoogleFonts.firaSans(
               fontSize: 10,
               fontWeight: FontWeight.bold,

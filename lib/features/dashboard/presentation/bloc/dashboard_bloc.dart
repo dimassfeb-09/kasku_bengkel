@@ -82,16 +82,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     // 2. Active Queues & Completed Vehicles
     int activeQueues = services.where((s) => 
-      s.status == ServiceStatus.antri || s.status == ServiceStatus.dikerjakan
+      s.status.toString().split('.').last == 'antri' || s.status.toString().split('.').last == 'dikerjakan'
     ).length;
 
     int completedVehicles = services.where((s) => 
-      s.status == ServiceStatus.selesai || s.status == ServiceStatus.siapDiambil
+      s.status.toString().split('.').last == 'selesai' || s.status.toString().split('.').last == 'siapDiambil'
     ).length;
 
     // 3. Recent Active Services (Top 5)
     final recentServices = services
-        .where((s) => s.status != ServiceStatus.lunas)
+        .where((s) => s.status.toString().split('.').last != 'lunas')
         .toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final topRecent = recentServices.take(5).toList();

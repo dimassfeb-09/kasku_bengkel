@@ -299,6 +299,8 @@ ServiceOrder _$ServiceOrderFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ServiceOrder {
   String get id => throw _privateConstructorUsedError;
+  String? get vehicleId =>
+      throw _privateConstructorUsedError; // Added for master data reference
   VehicleInfo get vehicleInfo => throw _privateConstructorUsedError;
   String get complaint => throw _privateConstructorUsedError;
   String? get mechanicName => throw _privateConstructorUsedError;
@@ -328,6 +330,7 @@ abstract class $ServiceOrderCopyWith<$Res> {
   @useResult
   $Res call({
     String id,
+    String? vehicleId,
     VehicleInfo vehicleInfo,
     String complaint,
     String? mechanicName,
@@ -358,6 +361,7 @@ class _$ServiceOrderCopyWithImpl<$Res, $Val extends ServiceOrder>
   @override
   $Res call({
     Object? id = null,
+    Object? vehicleId = freezed,
     Object? vehicleInfo = null,
     Object? complaint = null,
     Object? mechanicName = freezed,
@@ -374,6 +378,10 @@ class _$ServiceOrderCopyWithImpl<$Res, $Val extends ServiceOrder>
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
                       as String,
+            vehicleId: freezed == vehicleId
+                ? _value.vehicleId
+                : vehicleId // ignore: cast_nullable_to_non_nullable
+                      as String?,
             vehicleInfo: null == vehicleInfo
                 ? _value.vehicleInfo
                 : vehicleInfo // ignore: cast_nullable_to_non_nullable
@@ -437,6 +445,7 @@ abstract class _$$ServiceOrderImplCopyWith<$Res>
   @useResult
   $Res call({
     String id,
+    String? vehicleId,
     VehicleInfo vehicleInfo,
     String complaint,
     String? mechanicName,
@@ -467,6 +476,7 @@ class __$$ServiceOrderImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? vehicleId = freezed,
     Object? vehicleInfo = null,
     Object? complaint = null,
     Object? mechanicName = freezed,
@@ -483,6 +493,10 @@ class __$$ServiceOrderImplCopyWithImpl<$Res>
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as String,
+        vehicleId: freezed == vehicleId
+            ? _value.vehicleId
+            : vehicleId // ignore: cast_nullable_to_non_nullable
+                  as String?,
         vehicleInfo: null == vehicleInfo
             ? _value.vehicleInfo
             : vehicleInfo // ignore: cast_nullable_to_non_nullable
@@ -529,6 +543,7 @@ class __$$ServiceOrderImplCopyWithImpl<$Res>
 class _$ServiceOrderImpl extends _ServiceOrder {
   const _$ServiceOrderImpl({
     required this.id,
+    this.vehicleId,
     required this.vehicleInfo,
     required this.complaint,
     this.mechanicName,
@@ -546,6 +561,9 @@ class _$ServiceOrderImpl extends _ServiceOrder {
 
   @override
   final String id;
+  @override
+  final String? vehicleId;
+  // Added for master data reference
   @override
   final VehicleInfo vehicleInfo;
   @override
@@ -575,7 +593,7 @@ class _$ServiceOrderImpl extends _ServiceOrder {
 
   @override
   String toString() {
-    return 'ServiceOrder(id: $id, vehicleInfo: $vehicleInfo, complaint: $complaint, mechanicName: $mechanicName, status: $status, items: $items, createdAt: $createdAt, updatedAt: $updatedAt, completedAt: $completedAt, readyAt: $readyAt)';
+    return 'ServiceOrder(id: $id, vehicleId: $vehicleId, vehicleInfo: $vehicleInfo, complaint: $complaint, mechanicName: $mechanicName, status: $status, items: $items, createdAt: $createdAt, updatedAt: $updatedAt, completedAt: $completedAt, readyAt: $readyAt)';
   }
 
   @override
@@ -584,6 +602,8 @@ class _$ServiceOrderImpl extends _ServiceOrder {
         (other.runtimeType == runtimeType &&
             other is _$ServiceOrderImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.vehicleId, vehicleId) ||
+                other.vehicleId == vehicleId) &&
             (identical(other.vehicleInfo, vehicleInfo) ||
                 other.vehicleInfo == vehicleInfo) &&
             (identical(other.complaint, complaint) ||
@@ -606,6 +626,7 @@ class _$ServiceOrderImpl extends _ServiceOrder {
   int get hashCode => Object.hash(
     runtimeType,
     id,
+    vehicleId,
     vehicleInfo,
     complaint,
     mechanicName,
@@ -634,6 +655,7 @@ class _$ServiceOrderImpl extends _ServiceOrder {
 abstract class _ServiceOrder extends ServiceOrder {
   const factory _ServiceOrder({
     required final String id,
+    final String? vehicleId,
     required final VehicleInfo vehicleInfo,
     required final String complaint,
     final String? mechanicName,
@@ -651,6 +673,8 @@ abstract class _ServiceOrder extends ServiceOrder {
 
   @override
   String get id;
+  @override
+  String? get vehicleId; // Added for master data reference
   @override
   VehicleInfo get vehicleInfo;
   @override

@@ -25,6 +25,7 @@ class ServiceOrder with _$ServiceOrder {
 
   const factory ServiceOrder({
     required String id,
+    String? vehicleId, // Added for master data reference
     required VehicleInfo vehicleInfo,
     required String complaint,
     String? mechanicName,

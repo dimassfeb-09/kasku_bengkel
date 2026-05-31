@@ -56,7 +56,7 @@ class PaymentSuccessDialog extends StatelessWidget {
                   _buildSummaryRow('Pemilik', order.vehicleInfo.ownerName),
                   const Divider(height: 24),
                   _buildSummaryRow('Total Bill', 'Rp ${transaction.totalAmount.toStringAsFixed(0)}', isBold: true),
-                  _buildSummaryRow('Metode', transaction.paymentMethod.name.toUpperCase()),
+                  _buildSummaryRow('Metode', transaction.paymentMethod.toString().split('.').last.toUpperCase()),
                   _buildSummaryRow('Bayar', 'Rp ${transaction.amountPaid.toStringAsFixed(0)}'),
                   const Divider(height: 24),
                   _buildSummaryRow(

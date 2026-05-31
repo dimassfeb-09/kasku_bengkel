@@ -38,7 +38,10 @@ class ReportsView extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'LAPORAN & ANALITIK',
-          style: GoogleFonts.firaSans(fontWeight: FontWeight.w800, letterSpacing: 1),
+          style: GoogleFonts.firaSans(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1,
+          ),
         ),
       ),
       body: BlocBuilder<ReportsBloc, ReportsState>(
@@ -71,19 +74,31 @@ class ReportsView extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.download_rounded, size: 18, color: Color(0xFF1E3A8A)),
+                            icon: const Icon(
+                              Icons.download_rounded,
+                              size: 18,
+                              color: Color(0xFF1E3A8A),
+                            ),
                             onPressed: () async {
-                              final path = await DataExporter.exportToExcel(m.filteredOrders);
+                              final path = await DataExporter.exportToExcel(
+                                m.filteredOrders,
+                              );
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Berhasil ekspor ke: $path')),
+                                  SnackBar(
+                                    content: Text('Berhasil ekspor ke: $path'),
+                                  ),
                                 );
                               }
                             },
                           ),
                           Text(
                             '${m.filteredOrders.length} Order',
-                            style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF94A3B8),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -115,7 +130,10 @@ class ReportsView extends StatelessWidget {
     );
   }
 
-  Widget _buildDateFilterCard(BuildContext context, DateTimeRange currentRange) {
+  Widget _buildDateFilterCard(
+    BuildContext context,
+    DateTimeRange currentRange,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -123,12 +141,24 @@ class ReportsView extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: ListTile(
-        leading: const Icon(Icons.calendar_today_rounded, color: Color(0xFF1E3A8A), size: 20),
+        leading: const Icon(
+          Icons.calendar_today_rounded,
+          color: Color(0xFF1E3A8A),
+          size: 20,
+        ),
         title: Text(
           '${currentRange.start.toString().split(' ')[0]} — ${currentRange.end.toString().split(' ')[0]}',
-          style: GoogleFonts.firaCode(fontWeight: FontWeight.bold, fontSize: 14, color: const Color(0xFF1E293B)),
+          style: GoogleFonts.firaCode(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: const Color(0xFF1E293B),
+          ),
         ),
-        trailing: const Icon(Icons.tune_rounded, size: 20, color: Color(0xFF94A3B8)),
+        trailing: const Icon(
+          Icons.tune_rounded,
+          size: 20,
+          color: Color(0xFF94A3B8),
+        ),
         onTap: () async {
           final picked = await showDateRangePicker(
             context: context,
@@ -185,7 +215,12 @@ class ReportsView extends StatelessWidget {
 
   Widget _buildTopServicesList(Map<String, int> services) {
     if (services.isEmpty) {
-      return const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('Belum ada data jasa terlaris.')));
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text('Belum ada data jasa terlaris.'),
+        ),
+      );
     }
     return Container(
       decoration: BoxDecoration(
@@ -194,27 +229,56 @@ class ReportsView extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
-        children: services.entries.map((e) => Column(
-          children: [
-            ListTile(
-              dense: true,
-              title: Text(e.key, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(12)),
-                child: Text('${e.value}x', style: GoogleFonts.firaCode(color: const Color(0xFF1E3A8A), fontWeight: FontWeight.bold, fontSize: 11)),
+        children: services.entries
+            .map(
+              (e) => Column(
+                children: [
+                  ListTile(
+                    dense: true,
+                    title: Text(
+                      e.key,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${e.value}x',
+                        style: GoogleFonts.firaCode(
+                          color: const Color(0xFF1E3A8A),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (e.key != services.keys.last)
+                    const Divider(height: 1, indent: 16, endIndent: 16),
+                ],
               ),
-            ),
-            if (e.key != services.keys.last) const Divider(height: 1, indent: 16, endIndent: 16),
-          ],
-        )).toList(),
+            )
+            .toList(),
       ),
     );
   }
 
   Widget _buildOrderHistoryList(List<dynamic> orders) {
     if (orders.isEmpty) {
-      return const Center(child: Padding(padding: EdgeInsets.all(32), child: Text('Tidak ada riwayat order.')));
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: Text('Tidak ada riwayat order.'),
+        ),
+      );
     }
     return ListView.builder(
       shrinkWrap: true,
@@ -230,9 +294,21 @@ class ReportsView extends StatelessWidget {
             border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            title: Text(o.vehicleInfo.plateNumber, style: GoogleFonts.firaCode(fontWeight: FontWeight.bold, fontSize: 14)),
-            subtitle: Text('${o.vehicleInfo.ownerName} • ${o.createdAt.toString().split(' ')[0]}', style: const TextStyle(fontSize: 12)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            title: Text(
+              o.vehicleInfo.plateNumber,
+              style: GoogleFonts.firaCode(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            subtitle: Text(
+              '${o.vehicleInfo.ownerName} • ${o.createdAt.toString().split(' ')[0]}',
+              style: const TextStyle(fontSize: 12),
+            ),
             trailing: _MiniStatusBadge(o.status),
           ),
         );
@@ -247,7 +323,12 @@ class _MetricItem extends StatelessWidget {
   final Color color;
   final int flex;
 
-  const _MetricItem({required this.label, required this.value, required this.color, required this.flex});
+  const _MetricItem({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.flex,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -258,14 +339,34 @@ class _MetricItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 4))],
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(value, style: GoogleFonts.firaCode(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+            Text(
+              value,
+              style: GoogleFonts.firaCode(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.w500)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
       ),
@@ -286,8 +387,12 @@ class _MiniStatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        status.name.toUpperCase(),
-        style: GoogleFonts.firaSans(fontSize: 9, fontWeight: FontWeight.w800, color: const Color(0xFF64748B)),
+        status.toString().split('.').last.toUpperCase(),
+        style: GoogleFonts.firaSans(
+          fontSize: 9,
+          fontWeight: FontWeight.w800,
+          color: const Color(0xFF64748B),
+        ),
       ),
     );
   }

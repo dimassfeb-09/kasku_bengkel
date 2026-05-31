@@ -314,8 +314,8 @@ class ServiceDetailPage extends StatelessWidget {
   }
 
   Widget _buildStatusActions(BuildContext context, ServiceOrder order) {
-    if (order.status == ServiceStatus.siapDiambil ||
-        order.status == ServiceStatus.lunas) {
+    if (order.status.toString().split('.').last == 'siapDiambil' ||
+        order.status.toString().split('.').last == 'lunas') {
       return const SizedBox.shrink();
     }
 
@@ -323,18 +323,20 @@ class ServiceDetailPage extends StatelessWidget {
     ServiceStatus nextStatus;
     Color buttonColor;
 
-    switch (order.status) {
-      case ServiceStatus.antri:
+    final currentStatus = order.status.toString().split('.').last;
+
+    switch (currentStatus) {
+      case 'antri':
         label = 'MULAI KERJAKAN';
         nextStatus = ServiceStatus.dikerjakan;
         buttonColor = const Color(0xFF1E3A8A);
         break;
-      case ServiceStatus.dikerjakan:
+      case 'dikerjakan':
         label = 'SELESAIKAN';
         nextStatus = ServiceStatus.selesai;
         buttonColor = const Color(0xFF1E3A8A);
         break;
-      case ServiceStatus.selesai:
+      case 'selesai':
         label = 'KONFIRMASI SIAP DIAMBIL';
         nextStatus = ServiceStatus.siapDiambil;
         buttonColor = const Color(0xFFF97316);
@@ -497,27 +499,32 @@ class _StatusBadge extends StatelessWidget {
     Color color;
     String label;
 
-    switch (status) {
-      case ServiceStatus.antri:
+    final currentStatus = status.toString().split('.').last;
+
+    switch (currentStatus) {
+      case 'antri':
         color = Colors.orange;
         label = 'ANTRI';
         break;
-      case ServiceStatus.dikerjakan:
+      case 'dikerjakan':
         color = Colors.blue;
         label = 'PROSES';
         break;
-      case ServiceStatus.selesai:
+      case 'selesai':
         color = Colors.green;
         label = 'SELESAI';
         break;
-      case ServiceStatus.siapDiambil:
+      case 'siapDiambil':
         color = Colors.teal;
         label = 'SIAP';
         break;
-      case ServiceStatus.lunas:
+      case 'lunas':
         color = const Color(0xFF64748B);
         label = 'LUNAS';
         break;
+      default:
+        color = Colors.grey;
+        label = 'UNKNOWN';
     }
 
     return Container(

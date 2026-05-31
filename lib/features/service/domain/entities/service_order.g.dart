@@ -29,6 +29,7 @@ Map<String, dynamic> _$$VehicleInfoImplToJson(_$VehicleInfoImpl instance) =>
 _$ServiceOrderImpl _$$ServiceOrderImplFromJson(Map<String, dynamic> json) =>
     _$ServiceOrderImpl(
       id: json['id'] as String,
+      vehicleId: json['vehicleId'] as String?,
       vehicleInfo: VehicleInfo.fromJson(
         json['vehicleInfo'] as Map<String, dynamic>,
       ),
@@ -55,6 +56,7 @@ _$ServiceOrderImpl _$$ServiceOrderImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$ServiceOrderImplToJson(_$ServiceOrderImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'vehicleId': instance.vehicleId,
       'vehicleInfo': instance.vehicleInfo,
       'complaint': instance.complaint,
       'mechanicName': instance.mechanicName,

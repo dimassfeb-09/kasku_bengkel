@@ -142,7 +142,7 @@ class _PendingOrderCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                order.status.name.toUpperCase(),
+                order.status.toString().split('.').last.toUpperCase(),
                 style: GoogleFonts.firaSans(fontSize: 9, fontWeight: FontWeight.w800, color: const Color(0xFF475569)),
               ),
             ),

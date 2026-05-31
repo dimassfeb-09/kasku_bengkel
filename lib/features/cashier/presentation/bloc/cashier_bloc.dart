@@ -90,8 +90,8 @@ class CashierBloc extends Bloc<CashierEvent, CashierState> {
       (services) {
         final pending = services
             .where((s) =>
-                s.status == ServiceStatus.selesai ||
-                s.status == ServiceStatus.siapDiambil)
+                s.status.toString().split('.').last == 'selesai' ||
+                s.status.toString().split('.').last == 'siapDiambil')
             .toList();
         emit(PendingPaymentsLoaded(pending));
       },

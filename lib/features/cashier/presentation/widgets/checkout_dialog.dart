@@ -174,7 +174,7 @@ class _CheckoutDialogState extends State<CheckoutDialog> {
           items: PaymentMethod.values
               .map((e) => DropdownMenuItem(
                   value: e, 
-                  child: Text(e.name.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))))
+                  child: Text(e.toString().split('.').last.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))))
               .toList(),
         ),
       ),

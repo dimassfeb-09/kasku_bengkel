@@ -22,10 +22,37 @@ class LocalDatabase {
   }
 
   Future _createDB(Database db, int version) async {
+    // Customer Table
+    await db.execute('''
+      CREATE TABLE customers (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        phone TEXT NOT NULL UNIQUE,
+        email TEXT,
+        address TEXT,
+        createdAt TEXT NOT NULL
+      )
+    ''');
+
+    // Vehicle Table
+    await db.execute('''
+      CREATE TABLE vehicles (
+        id TEXT PRIMARY KEY,
+        plateNumber TEXT NOT NULL UNIQUE,
+        customerId TEXT NOT NULL,
+        type TEXT NOT NULL,
+        brand TEXT,
+        model TEXT,
+        createdAt TEXT NOT NULL,
+        FOREIGN KEY (customerId) REFERENCES customers (id)
+      )
+    ''');
+
     // Service Order Table
     await db.execute('''
       CREATE TABLE service_orders (
         id TEXT PRIMARY KEY,
+        vehicleId TEXT, -- Reference to Master Vehicle
         plateNumber TEXT NOT NULL,
         ownerName TEXT NOT NULL,
         ownerPhone TEXT NOT NULL,
@@ -39,7 +66,8 @@ class LocalDatabase {
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
         completedAt TEXT,
-        readyAt TEXT
+        readyAt TEXT,
+        FOREIGN KEY (vehicleId) REFERENCES vehicles (id)
       )
     ''');
 
